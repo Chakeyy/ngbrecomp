@@ -42,7 +42,7 @@ jobs:
           name: NinjaGaidenBlack-android-arm64
           path: build/NinjaGaidenBlack-android-arm64.apk
 
-      - name: Create Release
+      - name: Create / Update Release
         if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/fix-android-storage'
         uses: softprops/action-gh-release@v2
         with:
@@ -51,6 +51,9 @@ jobs:
           body: |
             Fix for Android Scoped Storage error:
             `Cannot create the folder /storage/emulated/0/Android/data/io.github.gamboozino.ngbrecomp/files/game.partial: Not a directory (at /storage/emulated)`
+
+            Signed with permanent repository keystore for seamless updates.
           files: build/NinjaGaidenBlack-android-arm64.apk
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
