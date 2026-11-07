@@ -146,15 +146,15 @@ static int mkdirs(const char *path)
         *q = 0;
         if (mkdir(tmp, 0755) != 0) {
             int e = errno;
-            if (!is_dir(tmp)) {
+            if (e != EEXIST && !is_dir(tmp)) {
                 snprintf(s_mk_at, sizeof s_mk_at, "%s", tmp);
-                errno = s_mk_errno = e == EEXIST ? ENOTDIR : e;   /* there, but not a folder: a file, a broken link */
+                errno = s_mk_errno = e;
                 return -1;
             }
         }
         *q = '/';
     }
-    if (mkdir(tmp, 0755) == 0 || (errno == EEXIST && is_dir(tmp)))
+    if (mkdir(tmp, 0755) == 0 || (errno == EEXIST && is_dir(tmp)) || is_dir(tmp))
         return 0;
     s_mk_errno = errno == EEXIST ? ENOTDIR : errno;
     snprintf(s_mk_at, sizeof s_mk_at, "%s", tmp);
